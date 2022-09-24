@@ -36,7 +36,16 @@ void ThreadGetCamPic::run()
             msleep(20);
             continue;
         }
+        matTemp.copyTo(view);
+
+        if (m_openCalibration)
+        {
+            //进行相机标定
+            cameraCalibration(view);
+            view.copyTo(matTemp);
+        }
         
+
         //BGR转为RGB
         cvtColor(matTemp, matTemp, cv::COLOR_BGR2RGB);
 
@@ -46,5 +55,28 @@ void ThreadGetCamPic::run()
         msleep(20);
     }
 
+
+}
+
+void ThreadGetCamPic::cameraCalibration(const cv::Mat& view)
+{
+    Mat viewGray;
+    Size boardSize;
+    boardSize.width = 3;
+    boardSize.height = 4;
+
+    vector<Point2f> pointbuf;
+    cvtColor(view, viewGray, COLOR_BGR2GRAY);
+
+    bool found;
+    found = findChessboardCorners(view, boardSize, pointbuf,
+        CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
+    if (found)
+    {
+        cornerSubPix(viewGray, pointbuf, Size(11, 11),
+            Size(-1, -1), TermCriteria(TermCriteria::EPS + TermCriteria::COUNT, 30, 0.0001));
+        drawChessboardCorners(view, boardSize, Mat(pointbuf), found);
+    }
+        
 
 }

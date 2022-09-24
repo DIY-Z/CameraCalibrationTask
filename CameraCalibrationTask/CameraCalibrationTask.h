@@ -12,7 +12,7 @@ class CameraCalibrationTask : public QMainWindow
 public:
     CameraCalibrationTask(QWidget *parent = nullptr);
     ~CameraCalibrationTask();
-
+    
 public slots:
     void onFreshCurImg(const QImage& img);
     void onOpenCamera();
@@ -24,5 +24,5 @@ private:
     QImage m_img2Show;
     QPixmap m_pix2Show;
 
-    ThreadGetCamPic m_stThreadGetCamPic;
+    ThreadGetCamPic m_stThreadGetCamPic;  
 };

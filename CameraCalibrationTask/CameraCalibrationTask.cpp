@@ -11,6 +11,8 @@ CameraCalibrationTask::CameraCalibrationTask(QWidget *parent)
     connect(ui.openCameraBtn, &QPushButton::clicked, this, &CameraCalibrationTask::onOpenCamera);
     connect(&m_stThreadGetCamPic, &ThreadGetCamPic::sendInner_cameraMatrix, this, &CameraCalibrationTask::onSetInnerText_cameraMatrix);
     connect(&m_stThreadGetCamPic, &ThreadGetCamPic::sendInner_distCoeffs, this, &CameraCalibrationTask::onSetInnerText_distCoeffs);
+    connect(&m_stThreadGetCamPic, &ThreadGetCamPic::sendInner_rotationMatrix, this, &CameraCalibrationTask::onSetInnerText_rotationMatrix);
+    connect(&m_stThreadGetCamPic, &ThreadGetCamPic::sendInner_translationMatrix, this, &CameraCalibrationTask::onSetInnerText_translationMatrix);
 }
 
 CameraCalibrationTask::~CameraCalibrationTask()
@@ -36,6 +38,16 @@ void CameraCalibrationTask::onSetInnerText_cameraMatrix(const QString& str)
 void CameraCalibrationTask::onSetInnerText_distCoeffs(const QString& str)
 {
     ui.textEdit_inner->append("distCoeffs: " + str);
+}
+
+void CameraCalibrationTask::onSetInnerText_rotationMatrix(const QString& str)
+{
+    ui.textEdit_outer->append("rotationMatrix: " + str);
+}
+
+void CameraCalibrationTask::onSetInnerText_translationMatrix(const QString& str)
+{
+    ui.textEdit_outer->append("translationMatrix: " + str);
 }
 
 void CameraCalibrationTask::onOpenCamera()

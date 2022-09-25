@@ -66,6 +66,8 @@ signals:
 	void sigSendCurImg(const QImage& img);
 	void sendInner_cameraMatrix(const QString& str);
 	void sendInner_distCoeffs(const QString& str);
+	void sendInner_rotationMatrix(const QString& str);
+	void sendInner_translationMatrix(const QString& str);
 private:
 	bool m_bStop = true;
 	QMutex m_mux;

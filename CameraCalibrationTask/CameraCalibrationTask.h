@@ -19,6 +19,8 @@ public slots:
     void onOpenCamera();
     void onSetInnerText_cameraMatrix(const QString& str);
     void onSetInnerText_distCoeffs(const QString& str);
+    void onSetInnerText_rotationMatrix(const QString& str);
+    void onSetInnerText_translationMatrix(const QString& str);
 private:
     Ui::CameraCalibrationTaskClass ui;
 

@@ -122,7 +122,7 @@ bool ThreadGetCamPic::runAndSave(const vector<vector<Point2f>>& imagePoints,
     {
         //printf("ok");
         stringstream stream;
-        QString str_cameraMatrix, str_distCoeffs;
+        QString str_cameraMatrix, str_distCoeffs, str_rotationMatrix, str_translationMatrix;
         stream << cameraMatrix;
         str_cameraMatrix = QString::fromStdString(stream.str());
 
@@ -130,9 +130,22 @@ bool ThreadGetCamPic::runAndSave(const vector<vector<Point2f>>& imagePoints,
         stream << distCoeffs;
         str_distCoeffs = QString::fromStdString(stream.str());
 
+        Mat rotationMatrix = Mat(3, 3, CV_32FC1, Scalar::all(0));
+        Rodrigues(rvecs[0], rotationMatrix);
+        Mat translationMatrix = Mat(tvecs[0]);
+        stream.clear();
+        stream << rotationMatrix;
+        str_rotationMatrix = QString::fromStdString(stream.str());
+        stream.clear();
+        stream << translationMatrix;
+        str_translationMatrix = QString::fromStdString(stream.str());
+        
+
         //·¢ËÍÐÅºÅ
         emit sendInner_cameraMatrix(str_cameraMatrix);
         emit sendInner_distCoeffs(str_distCoeffs);
+        emit sendInner_rotationMatrix(str_rotationMatrix);
+        emit sendInner_translationMatrix(str_translationMatrix);
         //msleep(20);
         visit = true;
 

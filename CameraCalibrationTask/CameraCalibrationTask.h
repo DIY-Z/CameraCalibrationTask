@@ -21,6 +21,8 @@ public slots:
     void onSetInnerText_distCoeffs(const QString& str);
     void onSetInnerText_rotationMatrix(const QString& str);
     void onSetInnerText_translationMatrix(const QString& str);
+
+    void onFreshUndistortedImg(const QImage& img);
 private:
     Ui::CameraCalibrationTaskClass ui;
 

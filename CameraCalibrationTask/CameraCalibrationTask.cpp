@@ -13,6 +13,7 @@ CameraCalibrationTask::CameraCalibrationTask(QWidget *parent)
     connect(&m_stThreadGetCamPic, &ThreadGetCamPic::sendInner_distCoeffs, this, &CameraCalibrationTask::onSetInnerText_distCoeffs);
     connect(&m_stThreadGetCamPic, &ThreadGetCamPic::sendInner_rotationMatrix, this, &CameraCalibrationTask::onSetInnerText_rotationMatrix);
     connect(&m_stThreadGetCamPic, &ThreadGetCamPic::sendInner_translationMatrix, this, &CameraCalibrationTask::onSetInnerText_translationMatrix);
+    connect(&m_stThreadGetCamPic, &ThreadGetCamPic::sendUndistortedImg, this, &CameraCalibrationTask::onFreshUndistortedImg);
 }
 
 CameraCalibrationTask::~CameraCalibrationTask()
@@ -48,6 +49,17 @@ void CameraCalibrationTask::onSetInnerText_rotationMatrix(const QString& str)
 void CameraCalibrationTask::onSetInnerText_translationMatrix(const QString& str)
 {
     ui.textEdit_outer->append("translationMatrix: " + str);
+}
+
+void CameraCalibrationTask::onFreshUndistortedImg(const QImage& img)
+{
+    m_imgSrc = img.copy();   //如果对视频中的帧图像或者摄像头拍到的视频的图像帧有用处的话,可以先将其暂存
+
+    m_img2Show = m_imgSrc.scaled(ui.oldPic->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
+
+    m_pix2Show = QPixmap::fromImage(m_img2Show);
+
+    ui.newPic->setPixmap(m_pix2Show);
 }
 
 void CameraCalibrationTask::onOpenCamera()

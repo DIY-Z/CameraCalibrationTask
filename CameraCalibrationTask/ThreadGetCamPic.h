@@ -64,6 +64,7 @@ public:
 //signals是修饰信号函数的关键字
 signals:
 	void sigSendCurImg(const QImage& img);
+	void sendUndistortedImg(const QImage& img);
 	void sendInner_cameraMatrix(const QString& str);
 	void sendInner_distCoeffs(const QString& str);
 	void sendInner_rotationMatrix(const QString& str);

@@ -64,8 +64,8 @@ void ThreadGetCamPic::cameraCalibration(const cv::Mat& view)
 {
     Mat viewGray;
     Size boardSize, imageSize;
-    boardSize.width = 3;
-    boardSize.height = 4;
+    boardSize.width = 6;
+    boardSize.height = 7;
     imageSize = view.size();
     vector<Point2f> pointbuf;       //用于存储检测到的内角点图像坐标位置
     cvtColor(view, viewGray, COLOR_BGR2GRAY);
@@ -96,6 +96,18 @@ void ThreadGetCamPic::cameraCalibration(const cv::Mat& view)
             boardSize, squareSize, grid_width, release_object, aspectRatio,
             flags, cameraMatrix, distCoeffs,
             false, false, false);
+        if (ok)
+        {
+            //进行图像矫正
+            Mat dst_view = view.clone();
+            undistort(view, dst_view, cameraMatrix, distCoeffs);
+            //BGR转为RGB
+            cvtColor(dst_view, dst_view, cv::COLOR_BGR2RGB);
+            QImage dstImg;
+            dstImg = QImage(dst_view.data, dst_view.cols, dst_view.rows, dst_view.step, QImage::Format_RGB888).copy();
+            emit sendUndistortedImg(dstImg);
+            msleep(20);
+        }
     }
         
 
@@ -106,7 +118,7 @@ bool ThreadGetCamPic::runAndSave(const vector<vector<Point2f>>& imagePoints,
                             bool release_object, float aspectRatio, int flags, Mat& cameraMatrix, 
                             Mat& distCoeffs, bool writeExtrinsics, bool writePoints, bool writeGrid)
 {
-    vector<Mat> rvecs, tvecs;
+    vector<Mat> rvecs, tvecs; //分别表示每幅图像的平移向量和旋转向量
     vector<float> reprojErrs;
     double totalAvgErr = 0;
     vector<Point3f> newObjPoints;
@@ -188,13 +200,13 @@ bool ThreadGetCamPic::runCalibration(vector<vector<Point2f>> imagePoints, Size i
 
     bool ok = checkRange(cameraMatrix) && checkRange(distCoeffs);
 
-    if (release_object) {
-        cout << "New board corners: " << endl;
-        cout << newObjPoints[0] << endl;
-        cout << newObjPoints[boardSize.width - 1] << endl;
-        cout << newObjPoints[boardSize.width * (boardSize.height - 1)] << endl;
-        cout << newObjPoints.back() << endl;
-    }
+    //if (release_object) {
+    //    cout << "New board corners: " << endl;
+    //    cout << newObjPoints[0] << endl;
+    //    cout << newObjPoints[boardSize.width - 1] << endl;
+    //    cout << newObjPoints[boardSize.width * (boardSize.height - 1)] << endl;
+    //    cout << newObjPoints.back() << endl;
+    //}
 
     objectPoints.clear();
     objectPoints.resize(imagePoints.size(), newObjPoints);

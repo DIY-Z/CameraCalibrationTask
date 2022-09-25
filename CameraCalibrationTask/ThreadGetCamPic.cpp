@@ -65,14 +65,16 @@ void ThreadGetCamPic::cameraCalibration(const cv::Mat& view)
     boardSize.width = 3;
     boardSize.height = 4;
 
-    vector<Point2f> pointbuf;
+    vector<Point2f> pointbuf;       //用于存储检测到的内角点图像坐标位置
     cvtColor(view, viewGray, COLOR_BGR2GRAY);
 
     bool found;
+    //findChessboardCorners方法是用于检测图片中的内角点(参数解释:https://blog.csdn.net/Kalenee/article/details/80672785)
     found = findChessboardCorners(view, boardSize, pointbuf,
         CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
     if (found)
     {
+        //cornerSubPix方法是用于提取亚像素角点信息(参数解释:https://blog.csdn.net/Kalenee/article/details/80672785)
         cornerSubPix(viewGray, pointbuf, Size(11, 11),
             Size(-1, -1), TermCriteria(TermCriteria::EPS + TermCriteria::COUNT, 30, 0.0001));
         drawChessboardCorners(view, boardSize, Mat(pointbuf), found);

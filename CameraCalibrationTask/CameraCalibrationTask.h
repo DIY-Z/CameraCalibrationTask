@@ -4,6 +4,7 @@
 #include "ui_CameraCalibrationTask.h"
 #include <opencv2/opencv.hpp>
 #include "ThreadGetCamPic.h"
+using namespace cv;
 
 class CameraCalibrationTask : public QMainWindow
 {
@@ -16,7 +17,8 @@ public:
 public slots:
     void onFreshCurImg(const QImage& img);
     void onOpenCamera();
-
+    void onSetInnerText_cameraMatrix(const QString& str);
+    void onSetInnerText_distCoeffs(const QString& str);
 private:
     Ui::CameraCalibrationTaskClass ui;
 

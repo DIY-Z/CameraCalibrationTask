@@ -9,6 +9,8 @@ CameraCalibrationTask::CameraCalibrationTask(QWidget *parent)
 
     connect(&m_stThreadGetCamPic, &ThreadGetCamPic::sigSendCurImg, this, &CameraCalibrationTask::onFreshCurImg);
     connect(ui.openCameraBtn, &QPushButton::clicked, this, &CameraCalibrationTask::onOpenCamera);
+    connect(&m_stThreadGetCamPic, &ThreadGetCamPic::sendInner_cameraMatrix, this, &CameraCalibrationTask::onSetInnerText_cameraMatrix);
+    connect(&m_stThreadGetCamPic, &ThreadGetCamPic::sendInner_distCoeffs, this, &CameraCalibrationTask::onSetInnerText_distCoeffs);
 }
 
 CameraCalibrationTask::~CameraCalibrationTask()
@@ -26,6 +28,15 @@ void CameraCalibrationTask::onFreshCurImg(const QImage& img)
     ui.oldPic->setPixmap(m_pix2Show);
 }
 
+void CameraCalibrationTask::onSetInnerText_cameraMatrix(const QString& str)
+{
+    ui.textEdit_inner->append("cameraMatrix: " + str);
+}
+
+void CameraCalibrationTask::onSetInnerText_distCoeffs(const QString& str)
+{
+    ui.textEdit_inner->append("distCoeffs: " + str);
+}
 
 void CameraCalibrationTask::onOpenCamera()
 {
